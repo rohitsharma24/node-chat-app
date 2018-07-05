@@ -21,13 +21,13 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('User has been disconected');
     });
-    socket.emit('newMessage', {
-        from: 'Andrew',
-        text: 'Hey.. Ready for sanju',
-        createdAt: new Date()
-    });
+    
     socket.on('createMessage', (message) => {
-        console.log(JSON.stringify(message, undefined, 2));
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 })
 
