@@ -22,6 +22,8 @@ io.on('connection', (socket) => {
         console.log('User has been disconected');
     });
     
+    socket.emit('newMessage', {from: 'admin', text: 'welcome to chat app', createdAt: new Date().getTime()});
+    socket.broadcast.emit('newMessage', {from: 'admin', text: 'New User Joined'});
     socket.on('createMessage', (message) => {
         io.emit('newMessage', {
             from: message.from,
