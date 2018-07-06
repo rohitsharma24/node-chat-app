@@ -24,8 +24,8 @@ io.on('connection', (socket) => {
         console.log('User Disconected');
     });
     
-    socket.emit('newMessage', generateMessage('admin', 'welcome to chat app'));
-    socket.broadcast.emit('newMessage', generateMessage('admin', 'New User Joined'));
+    socket.emit('newMessage', generateMessage('Admin', 'welcome to chat app'));
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User Joined'));
     socket.on('createMessage', (message, cb) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
         if( typeof cb === 'function' ) {
@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
         
     });
     socket.on('createLocationMessage', function(location) {
-        io.emit('newLocationMessage', generateLocationMessage('admin', location.latitude, location.longitude));
+        io.emit('newLocationMessage', generateLocationMessage('Admin', location.latitude, location.longitude));
     });
 })
 
