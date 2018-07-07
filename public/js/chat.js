@@ -16,10 +16,14 @@ function scrollToBottom() {
 
 socket.on('connect', function() {
     console.log('connected to server');
-
-    /* socket.emit('createMessage', {text: 'this is a text', from: 'andrew'}, (data) => {
-        console.log('got it', data);
-    }) */
+    const params = jQuery.deparam(window.location.search);
+    socket.emit('joinRoom', params, function(err) {
+        if(err) {
+            alert(err);
+            window.location.href = '/';
+        }
+        console.log('no error');
+    });
 });
 socket.on('newMessage', function(message) {
     const formattedCreatedAt = moment(message.createdAt).format('h:mm a');
