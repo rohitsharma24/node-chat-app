@@ -54,7 +54,7 @@ describe('Users', () => {
             name: 'user one'
         });
     });
-    it.only('should not get user with invalid Id', () => {
+    it('should not get user with invalid Id', () => {
         const id = '10';
         const user = testUsers.getUser(id);
         expect(user).toEqual({});
