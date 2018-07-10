@@ -20,7 +20,6 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
-    console.log('New User Connected', socket.id);
     socket.on('joinRoom', (params, callback) => {
     if(!isValidString(params['name']) || !isValidString(params['room'])) {
             return callback('Invalid Details !!!');
@@ -39,16 +38,21 @@ io.on('connection', (socket) => {
     });
     
     socket.on('createMessage', (message, cb) => {
-        io.emit('newMessage', generateMessage(message.from, message.text));
-        if( typeof cb === 'function' ) {
-            cb('at the server');
+        const currentUser = user.getUser(socket.id);
+        if(currentUser){
+            io.to(currentUser.room).emit('newMessage', generateMessage(currentUser.name, message.text));
+            if( typeof cb === 'function' ) {
+                cb('success');
+            }
         }
     });
     socket.on('createLocationMessage', function(location) {
-        io.emit('newLocationMessage', generateLocationMessage('Admin', location.latitude, location.longitude));
+        const currentUser = user.getUser(socket.id);
+        if(currentUser){
+            io.to(currentUser.room).emit('newLocationMessage', generateLocationMessage(currentUser.name, location.latitude, location.longitude));
+        }
     });
     socket.on('disconnect', () => {
-        console.log('User Disconected', socket.id);
         const removedUser = user.removeUser(socket.id);
         if(removedUser) {
             socket.broadcast.to(removedUser.room).emit('updateUserList', user.getUserListByRoom(removedUser.room));

@@ -15,7 +15,6 @@ function scrollToBottom() {
 }
 
 socket.on('connect', function() {
-    console.log('connected to server');
     const params = jQuery.deparam(window.location.search);
     socket.emit('joinRoom', params, function(err) {
         if(err) {
@@ -40,7 +39,7 @@ socket.on('newMessage', function(message) {
     jQuery('#message-list').append(li); */
 });
 socket.on('disconnect', function() {
-    console.log('disconnected from server');
+    //console.log('disconnected from server');
 });
 
 socket.on('newLocationMessage', function(message) {
@@ -67,7 +66,7 @@ jQuery('#message-form').on('submit', function(e) {
     e.preventDefault();
     const messageTextbox = jQuery('[name=message-box]');
     const text = messageTextbox.val();
-    socket.emit('createMessage', {from: 'User', text}, function() {
+    socket.emit('createMessage', {text}, function() {
         messageTextbox.val('');
     });
 });
@@ -79,11 +78,11 @@ locationButton.on('click', function () {
     }
     locationButton.attr('disabled', 'disabled').text('Sending location...');
     navigator.geolocation.getCurrentPosition(function(position) {
-        locationButton.removeAttr('disabled').text('Send location');
         socket.emit('createLocationMessage', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
-        })
+        });
+        locationButton.removeAttr('disabled').text('Send location');
     }, function() {
         locationButton.removeAttr('disabled').text('Send location');
         alert('Can\'t find your location');
