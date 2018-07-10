@@ -22,7 +22,6 @@ socket.on('connect', function() {
             alert(err);
             window.location.href = '/';
         }
-        console.log('no error');
     });
 });
 socket.on('newMessage', function(message) {
@@ -54,6 +53,14 @@ socket.on('newLocationMessage', function(message) {
     });
     jQuery('#message-list').append(renderHtml);
     scrollToBottom();
+});
+
+socket.on('updateUserList', function(users) {
+    const ol = jQuery('<ol></ol>');
+    users.forEach(user => {
+        ol.append(jQuery('<li></li>').text(user));
+    });
+    jQuery('#users').html(ol);
 });
 
 jQuery('#message-form').on('submit', function(e) {
