@@ -3,7 +3,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
 
-const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage, generateTypingMessage} = require('./utils/message');
 const {isValidString} = require('./utils/validation');
 const {Users} = require('./entities/users');
 
@@ -42,10 +42,16 @@ io.on('connection', (socket) => {
             }
         }
     });
-    socket.on('createLocationMessage', function(location) {
+    socket.on('createLocationMessage', (location) => {
         const currentUser = user.getUser(socket.id);
         if(currentUser){
             io.to(currentUser.room).emit('newLocationMessage', generateLocationMessage(currentUser.name, location.latitude, location.longitude));
+        }
+    });
+    socket.on('typing', () => {
+        const currentUser = user.getUser(socket.id);
+        if(currentUser){
+            socket.broadcast.to(currentUser.room).emit('typingMessage', generateTypingMessage(currentUser.name));
         }
     });
     socket.on('disconnect', () => {

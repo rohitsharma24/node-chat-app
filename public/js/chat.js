@@ -38,6 +38,15 @@ socket.on('newMessage', function(message) {
     li.text(`${message.from} ${moment(message.createdAt).format('h:mm a')}: ${message.text}`);
     jQuery('#message-list').append(li); */
 });
+socket.on('typingMessage', function(message) {
+    const newMessageHtml = jQuery('#typing-message-template').html(); 
+    const html = Mustache.render(newMessageHtml, {
+        text: message.text,
+        from: message.from,
+    });
+    jQuery('#message-list').append(html);
+    scrollToBottom();
+});
 socket.on('disconnect', function() {
     //console.log('disconnected from server');
 });
@@ -69,6 +78,10 @@ jQuery('#message-form').on('submit', function(e) {
     socket.emit('createMessage', {text}, function() {
         messageTextbox.val('');
     });
+});
+jQuery('[name=message-box]').on('keypress', function() {
+    jQuery()
+    socket.emit('typing');
 });
 
 const locationButton = jQuery('#send-location');
