@@ -12,10 +12,6 @@ const PORT = process.env.PORT || 3000;
 const user = new Users();
 app.use(express.static(path.join(__dirname, '../public')));
 
-/* app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/indexw.html'));
-}); */
-
 const server = http.createServer(app);
 const io = socketIO(server);
 
